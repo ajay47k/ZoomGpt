@@ -13,6 +13,8 @@ export const loginSchema = z.object({
 export const registerSchema = loginSchema
   .extend({
     confirmPassword: passwordSchema,
+  firstName: z.string().min(1).max(100),
+  lastName: z.string().min(1).max(100),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",

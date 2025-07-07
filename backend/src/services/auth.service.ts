@@ -34,7 +34,9 @@ import { sendMail } from "../utils/sendMail";
 
 type CreateAccountParams = {
   email: string;
-  password: string;
+  password: string; 
+  firstName: string;
+  lastName: string;
   userAgent?: string;
 };
 export const createAccount = async (data: CreateAccountParams) => {
@@ -47,6 +49,8 @@ export const createAccount = async (data: CreateAccountParams) => {
   const user = await UserModel.create({
     email: data.email,
     password: data.password,
+    firstName: data.firstName,
+    lastName: data.lastName,
   });
   const userId = user._id;
   const verificationCode = await VerificationCodeModel.create({
@@ -194,7 +198,6 @@ export const refreshUserAccessToken = async (refreshToken: string) => {
 export const sendPasswordResetEmail = async (email: string) => {
   // Catch any errors that were thrown and log them (but always return a success)
   // This will prevent leaking sensitive data back to the client (e.g. user not found, email not sent).
-  try {
     const user = await UserModel.findOne({ email });
     appAssert(user, NOT_FOUND, "User not found");
 
@@ -210,6 +213,23 @@ export const sendPasswordResetEmail = async (email: string) => {
       TOO_MANY_REQUESTS,
       "Too many requests, please try again later"
     );
+
+  try {
+    // const user = await UserModel.findOne({ email });
+    // appAssert(user, NOT_FOUND, "User not found");
+
+    // // check for max password reset requests (2 emails in 5min)
+    // const fiveMinAgo = fiveMinutesAgo();
+    // const count = await VerificationCodeModel.countDocuments({
+    //   userId: user._id,
+    //   type: VerificationCodeType.PasswordReset,
+    //   createdAt: { $gt: fiveMinAgo },
+    // });
+    // appAssert(
+    //   count <= 1,
+    //   TOO_MANY_REQUESTS,
+    //   "Too many requests, please try again later"
+    // );
 
     const expiresAt = oneHourFromNow();
     const verificationCode = await VerificationCodeModel.create({
