@@ -35,7 +35,7 @@ _Add a link to your demo or embed a GIF/video if available._
 
 ### Prerequisites
 
-- Node.js (version _X.X.X_)
+- Node.js
 - npm or yarn
 - API keys:
   - OpenAI (or equivalent LLM provider)
